@@ -1,10 +1,10 @@
 package com.rachel.polachova.aaplab4.DataModel;
 
-public class Stocks {
+public class Stock {
 	private String name;
 	private String price;
 
-	public Stocks(String name, String price) {
+	public Stock(String name, String price) {
 		this.name = name;
 		this.price = price;
 	}
