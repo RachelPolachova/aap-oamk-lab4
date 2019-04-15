@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -17,19 +20,21 @@ import com.rachel.polachova.aaplab4.DataModel.Stock;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 public class StockMonitorV2Activity extends AppCompatActivity {
 
 	final static String TAG = "StockMonitorActivity";
+	RequestQueue queue;
 
 	private ArrayList<Stock> stockArrayList = new ArrayList<Stock>() {
 		{
-			add(new Stock("AAPL", "0"));
-			add(new Stock("GOOGL", "0"));
-			add(new Stock("FB", "0"));
-			add(new Stock("NOK", "0"));
+			add(new Stock("Apple","AAPL", "0"));
+			add(new Stock("Google","GOOGL", "0"));
+			add(new Stock("Facebook","FB", "0"));
+			add(new Stock("Nokia","NOK", "0"));
 		}
 	};
 
@@ -40,8 +45,11 @@ public class StockMonitorV2Activity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_stock_monitor_v2);
 
+
+
+		setContentView(R.layout.activity_stock_monitor_v2);
+		queue = Volley.newRequestQueue(this);
 		callRequests();
 		recyclerView = findViewById(R.id.stock_monitor_v2_recycler_view);
 		recyclerView.setHasFixedSize(true);
@@ -49,26 +57,43 @@ public class StockMonitorV2Activity extends AppCompatActivity {
 		recyclerView.setLayoutManager(layoutManager);
 		mAdapter = new StockMonitorAdapter(stockArrayList);
 		recyclerView.setAdapter(mAdapter);
+		setupAddButton();
+	}
 
+
+	private void setupAddButton() {
+		Button add = findViewById(R.id.add_button);
+		add.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				TextView nameTv = findViewById(R.id.name_value);
+				TextView idTv = findViewById(R.id.id_value);
+
+				Stock s = new Stock(nameTv.getText().toString(), idTv.getText().toString(), "0");
+				stockArrayList.add(s);
+				queue.add(getRequest(s));
+
+				nameTv.setText("");
+				idTv.setText("");
+			}
+		});
 	}
 
 	private void callRequests() {
-		RequestQueue queue = Volley.newRequestQueue(this);
 		for (Stock stock: stockArrayList) {
 			queue.add(getRequest(stock));
 		}
 	}
 
 	private JsonObjectRequest getRequest(final Stock stock) {
-		String url = "https://financialmodelingprep.com/api/company/price/" + stock.getName() + "?datatype=json";
+		String url = "https://financialmodelingprep.com/api/company/price/" + stock.getId() + "?datatype=json";
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
 				Log.d(TAG, "onResponse: " + response.toString());
 				try {
-
 					int i = stockArrayList.indexOf(stock);
-					stockArrayList.get(i).setPrice(response.getJSONObject(stock.getName()).getString("price"));
+					stockArrayList.get(i).setPrice(response.getJSONObject(stock.getId()).getString("price"));
 					Log.d(TAG, "onResponse: " + stockArrayList.size());
 					mAdapter.notifyDataSetChanged();
 				} catch (JSONException e) {
@@ -85,5 +110,6 @@ public class StockMonitorV2Activity extends AppCompatActivity {
 		});
 		return jsonObjectRequest;
 	}
+
 
 }

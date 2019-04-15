@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 	private void setupButtons() {
 		setupHttpButton();
 		setupStockMonitorButton();
+		setupV2Monitor();
 	}
 
 	private void setupHttpButton() {
@@ -37,6 +38,17 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(MainActivity.this, StockMonitorActivity.class);
+				startActivity(i);
+			}
+		});
+	}
+
+	private void setupV2Monitor() {
+		Button goToMonitor = findViewById(R.id.go_to_stock_monitor_v2);
+		goToMonitor.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(MainActivity.this, StockMonitorV2Activity.class);
 				startActivity(i);
 			}
 		});

@@ -26,10 +26,10 @@ public class StockMonitorActivity extends AppCompatActivity {
 
 	private ArrayList<Stock> stockArrayList = new ArrayList<Stock>() {
 		{
-			add(new Stock("AAPL", "0"));
-			add(new Stock("GOOGL", "0"));
-			add(new Stock("FB", "0"));
-			add(new Stock("NOK", "0"));
+			add(new Stock("Apple","AAPL", "0"));
+			add(new Stock("Google","GOOGL", "0"));
+			add(new Stock("Facebook","FB", "0"));
+			add(new Stock("Nokia","NOK", "0"));
 		}
 	};
 
@@ -59,7 +59,7 @@ public class StockMonitorActivity extends AppCompatActivity {
 	}
 
 	private JsonObjectRequest getRequest(final Stock stock) {
-		String url = "https://financialmodelingprep.com/api/company/price/" + stock.getName() + "?datatype=json";
+		String url = "https://financialmodelingprep.com/api/company/price/" + stock.getId() + "?datatype=json";
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
@@ -67,7 +67,7 @@ public class StockMonitorActivity extends AppCompatActivity {
 				try {
 
 					int i = stockArrayList.indexOf(stock);
-					stockArrayList.get(i).setPrice(response.getJSONObject(stock.getName()).getString("price"));
+					stockArrayList.get(i).setPrice(response.getJSONObject(stock.getId()).getString("price"));
 					Log.d(TAG, "onResponse: " + stockArrayList.size());
 					mAdapter.notifyDataSetChanged();
 				} catch (JSONException e) {

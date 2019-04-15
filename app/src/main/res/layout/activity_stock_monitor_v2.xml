@@ -6,9 +6,43 @@
 	android:layout_height="match_parent"
 	tools:context=".StockMonitorV2Activity">
 
-	<android.support.v7.widget.RecyclerView
-		android:id="@+id/stock_monitor_v2_recycler_view"
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		>
+
+		<android.support.v7.widget.RecyclerView
+			android:id="@+id/stock_monitor_v2_recycler_view"
+			android:layout_weight="1"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+		<EditText
+			android:id="@+id/name_value"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<EditText
+				android:layout_weight="1"
+				android:id="@+id/id_value"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				/>
+
+			<Button
+				android:id="@+id/add_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="add"
+				/>
+
+		</LinearLayout>
+
+
+	</LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
