@@ -34,6 +34,7 @@ public class SimpleHTTPActivity extends AppCompatActivity {
 		submit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+
 				sendRequest();
 			}
 		});
@@ -41,14 +42,19 @@ public class SimpleHTTPActivity extends AppCompatActivity {
 
 	private void sendRequest() {
 
-
-		RequestQueue queue = Volley.newRequestQueue(this);
+		TextView urlTextView = findViewById(R.id.url_text_view);
 		try {
-			TextView urlTextView = findViewById(R.id.url_text_view);
 			String url = urlValidation(urlTextView.getText().toString());
-			queue.add(request(url));
+			RequestManager manager = new RequestManager();
+			manager.sendRequest(getApplicationContext(), url, new StringResponse() {
+				@Override
+				public void onCallback(String response) {
+                    final TextView respTextView = findViewById(R.id.response_text_view);
+                    respTextView.setMovementMethod(new ScrollingMovementMethod());
+                    respTextView.setText(response);
+				}
+			});
 		} catch (Exception e) {
-			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 		}
 
@@ -62,26 +68,26 @@ public class SimpleHTTPActivity extends AppCompatActivity {
 
 		return url;
 	}
-
-	private StringRequest request(String url) {
-		final TextView respTextView = findViewById(R.id.response_text_view);
-		respTextView.setMovementMethod(new ScrollingMovementMethod());
-		StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-			@Override
-			public void onResponse(String response) {
-
-
-				respTextView.setText(response);
-
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				respTextView.setText("Something went wrong.");
-			}
-		});
-		return stringRequest;
-	}
+//
+//	private StringRequest request(String url) {
+//		final TextView respTextView = findViewById(R.id.response_text_view);
+//		respTextView.setMovementMethod(new ScrollingMovementMethod());
+//		StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+//			@Override
+//			public void onResponse(String response) {
+//
+//
+//				respTextView.setText(response);
+//
+//			}
+//		}, new Response.ErrorListener() {
+//			@Override
+//			public void onErrorResponse(VolleyError error) {
+//				respTextView.setText("Something went wrong.");
+//			}
+//		});
+//		return stringRequest;
+//	}
 
 
 }
