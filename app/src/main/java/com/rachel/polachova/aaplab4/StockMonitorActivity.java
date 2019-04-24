@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.rachel.polachova.aaplab4.DataModel.Stock;
+import com.rachel.polachova.aaplab4.DataModel.StockCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,14 +25,7 @@ public class StockMonitorActivity extends AppCompatActivity {
 
 	final static String TAG = "StockMonitorActivity";
 
-	private ArrayList<Stock> stockArrayList = new ArrayList<Stock>() {
-		{
-			add(new Stock("Apple","AAPL", "0"));
-			add(new Stock("Google","GOOGL", "0"));
-			add(new Stock("Facebook","FB", "0"));
-			add(new Stock("Nokia","NOK", "0"));
-		}
-	};
+	private ArrayList<Stock> stockArrayList = new ArrayList<Stock>();
 
 	private RecyclerView recyclerView;
 	private RecyclerView.Adapter mAdapter;
@@ -53,8 +47,23 @@ public class StockMonitorActivity extends AppCompatActivity {
 
 	private void callRequests() {
 		RequestQueue queue = Volley.newRequestQueue(this);
-		for (Stock stock: stockArrayList) {
-			queue.add(getRequest(stock));
+		RequestManager manager = new RequestManager();
+		ArrayList<Stock> firstStocks = new ArrayList<Stock>(){
+			{
+				add(new Stock("Apple","AAPL", "0"));
+				add(new Stock("Google","GOOGL", "0"));
+				add(new Stock("Facebook","FB", "0"));
+				add(new Stock("Nokia","NOK", "0"));
+			}
+		};
+		for (Stock stock: firstStocks) {
+			queue.add(manager.getJsonRequest(getApplicationContext(), stock, new StockCallback() {
+				@Override
+				public void onCallback(Stock stock) {
+					stockArrayList.add(stock);
+					mAdapter.notifyDataSetChanged();
+				}
+			}));
 		}
 	}
 
